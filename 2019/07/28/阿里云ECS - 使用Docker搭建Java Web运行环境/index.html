@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="阿里云,docker,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="操作环境 服务器：阿里云ECS 操作系统：CentOS 7.4 64位  前提条件 CentOS具体要求：  必须是 64 位操作系统 建议内核在 3.8 以上   查看CentOS内核：  uname -r">
+<meta name="keywords" content="阿里云,docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阿里云ECS - 使用Docker搭建Java Web运行环境">
+<meta property="og:url" content="http://yoursite.com/2019/07/28/阿里云ECS - 使用Docker搭建Java Web运行环境/index.html">
+<meta property="og:site_name" content="WuFeee">
+<meta property="og:description" content="操作环境 服务器：阿里云ECS 操作系统：CentOS 7.4 64位  前提条件 CentOS具体要求：  必须是 64 位操作系统 建议内核在 3.8 以上   查看CentOS内核：  uname -r">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img-blog.csdn.net/2018050820043410?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xvb2tUaGVXb3JsZA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:updated_time" content="2019-07-28T08:08:19.661Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阿里云ECS - 使用Docker搭建Java Web运行环境">
+<meta name="twitter:description" content="操作环境 服务器：阿里云ECS 操作系统：CentOS 7.4 64位  前提条件 CentOS具体要求：  必须是 64 位操作系统 建议内核在 3.8 以上   查看CentOS内核：  uname -r">
+<meta name="twitter:image" content="https://img-blog.csdn.net/2018050820043410?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xvb2tUaGVXb3JsZA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/07/28/阿里云ECS - 使用Docker搭建Java Web运行环境/">
+
+
+
+
+
+  <title>阿里云ECS - 使用Docker搭建Java Web运行环境 | WuFeee</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">WuFeee</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Hello World!</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-categories" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/28/阿里云ECS - 使用Docker搭建Java Web运行环境/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="WuFeee">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WuFeee">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">阿里云ECS - 使用Docker搭建Java Web运行环境</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-07-28T15:30:56+08:00">
+                2019-07-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/服务器/" itemprop="url" rel="index">
+                    <span itemprop="name">服务器</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="操作环境"><a href="#操作环境" class="headerlink" title="操作环境"></a>操作环境</h2><ul>
+<li>服务器：阿里云ECS</li>
+<li>操作系统：CentOS 7.4 64位</li>
+</ul>
+<h2 id="前提条件"><a href="#前提条件" class="headerlink" title="前提条件"></a>前提条件</h2><ul>
+<li><p>CentOS具体要求：</p>
+<ul>
+<li>必须是 64 位操作系统</li>
+<li>建议内核在 3.8 以上</li>
+</ul>
+</li>
+<li><p>查看CentOS内核：</p>
+<p> uname -r</p>
+</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="操作步骤"><a href="#操作步骤" class="headerlink" title="操作步骤"></a>操作步骤</h2><h3 id="安装Docker"><a href="#安装Docker" class="headerlink" title="安装Docker"></a>安装Docker</h3><p>添加yum源</p>
+<pre><code>yum install epel-release –y
+yum clean all
+yum list</code></pre><p>安装并运行Docker</p>
+<pre><code>yum install docker-io –y
+systemctl start docker  #运行docker守护线程</code></pre><p>检查安装结果</p>
+<pre><code>docker info / docker version</code></pre><p>若输入Docker版本号，则说明安装成功</p>
+<h3 id="下载镜像"><a href="#下载镜像" class="headerlink" title="下载镜像"></a>下载镜像</h3><p>以CentOS为例，下载一个CentOS镜像</p>
+<p>推荐<a href="https://hub.daocloud.io/repos/" target="_blank" rel="noopener">DaoCloud镜像市场</a></p>
+<p>进入DaoCloud镜像市场，搜索centos，进入搜索详情页，能看到拉取镜像的命令，在宿主机上执行该命令</p>
+<pre><code>docker pull daocloud.io/library/centos:latest</code></pre><p><img src="https://img-blog.csdn.net/2018050820043410?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xvb2tUaGVXb3JsZA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>下载完成后，查看本地所有的镜像</p>
+<pre><code>docker images</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">REPOSITORY                   TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">daocloud.io/library/centos   latest              e934aafc2206        4 weeks ago         199 MB</span><br></pre></td></tr></table></figure>
+
+<p>如果看到以上的输出，说明可以使用“daocloud.io/library/centos”这个镜像</p>
+<h3 id="启动容器"><a href="#启动容器" class="headerlink" title="启动容器"></a>启动容器</h3><p>启动容器：</p>
+<pre><code>docker run -i -t e934aafc2206 /bin/bash</code></pre><p>命令分析：</p>
+<pre><code>docker run &lt;相关参数&gt; &lt;镜像 ID&gt; &lt;初始命令&gt;</code></pre><p>相关参数说明：</p>
+<ul>
+<li>i：表示以“交互模式”运行容器</li>
+<li>t：表示容器启动后会进入其命令行</li>
+<li>v：表示需要将本地哪个目录挂载到容器中，格式：-v &lt;宿主机目录&gt;:&lt;容器目录&gt;</li>
+</ul>
+<h3 id="安装JDK和Tomcat"><a href="#安装JDK和Tomcat" class="headerlink" title="安装JDK和Tomcat"></a>安装JDK和Tomcat</h3><p>基本思路：将源文件上传到宿主机上，再将文件复制到容器中</p>
+<ul>
+<li>下载到本地后使用rz命令上传jdk和tomcat的安装包，再解压文件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">上传下载命令安装：yum install lrzsz -y</span><br><span class="line">解压JDK程序包：tar -zxf /mnt/software/jdk-8u171-linux-x64.tar.gz -C .</span><br><span class="line">重命名 JDK 文件：mv jdk1.8.0_171/jdk/</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>将上传到宿主机中的jdk和tomcat复制到容器中</p>
+<pre><code>docker cp  &lt;path to jdk gz file&gt;/jdk-8u171-linux-x64.tar.gz  &lt;容器名称或者ID&gt;:/root</code></pre><h3 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h3><p>编辑.bashrc</p>
+<pre><code>vi ~/.bashrc  or vim ~/.bashrc
+export JAVA_HOME=/mnt/software/jdk  ## 这里要注意目录要换成自己解压的jdk 目录
+export JRE_HOME=${JAVA_HOME}/jre  
+export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib  
+export PATH=${JAVA_HOME}/bin:$PATH  </code></pre><p>使环境变量生效</p>
+<pre><code>source ~/.bashrc</code></pre><p>验证JDK版本</p>
+<pre><code>java -version</code></pre><h3 id="在容器中制作tomcat运行脚本"><a href="#在容器中制作tomcat运行脚本" class="headerlink" title="在容器中制作tomcat运行脚本"></a>在容器中制作tomcat运行脚本</h3><p>创建文件</p>
+<pre><code>touch /root/run.sh</code></pre><p>编辑文件</p>
+<pre><code>vi /root/run.sh  or vim /root/run.sh</code></pre><p>输入文件内容，保存退出</p>
+<pre><code>#!/bin/sh
+export JAVA_HOME=/mnt/software/jdk
+export PATH=$JAVA_HOME/bin:$PATH
+sh /mnt/software/tomcat/bin/catalina.sh run</code></pre><p>给run.sh添加权限</p>
+<pre><code>chmod u+x /root/run.sh</code></pre><p>退出docker容器</p>
+<pre><code>exit</code></pre><h3 id="创建自定义的Java-Web-镜像"><a href="#创建自定义的Java-Web-镜像" class="headerlink" title="创建自定义的Java Web 镜像"></a>创建自定义的Java Web 镜像</h3><p>查看容器id</p>
+<pre><code>docker ps -a</code></pre><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                     PORTS               NAMES</span><br><span class="line">b3b6ac81ad0c        e934aafc2206        &quot;/bin/bash&quot;         38 minutes ago      Exited (0) 6 minutes ago                       pedantic_beaver</span><br></pre></td></tr></table></figure>
+
+<p>根据容器id创建一个新的镜像</p>
+<pre><code>docker commit 3b6ac81ad0c wf/javaweb:0.1</code></pre><p>查看创建的镜像：docker images</p>
+<h3 id="用自定义的镜像启动容器"><a href="#用自定义的镜像启动容器" class="headerlink" title="用自定义的镜像启动容器"></a>用自定义的镜像启动容器</h3><p>注意点：如果启动之前的容器时使用了挂载，启动该镜像是也需要使用挂载</p>
+<pre><code>docker run -d -p 58080:8080 --name javaweb wf/javaweb:0.1 /root/run.sh</code></pre><p>参数说明：</p>
+<pre><code>- -d：表示以“守护模式”执行/root/run.sh脚本，此时 Tomcat 控制台不会出现在输出终端上
+- -p：表示宿主机与容器的端口映射，此时将容器内部的 8080 端口映射为宿主机的 58080 端口，这样就向外界暴露了 58080 端口，可通过 Docker 网桥来访问容器内部的 8080 端口了
+- --name：表示容器名称</code></pre><p>​<br>在浏览器中，输入公网IP:端口号，即可访问 Tomcat 首页（ps.阿里云ECS需要配置一下安全组）</p>
+<p>​    </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/阿里云/" rel="tag"># 阿里云</a>
+          
+            <a href="/tags/docker/" rel="tag"># docker</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/07/28/Java判断多个时间段是否有重叠/" rel="prev" title="判断多个时间段是否重叠">
+                判断多个时间段是否重叠 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">WuFeee</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#操作环境"><span class="nav-number">1.</span> <span class="nav-text">操作环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#前提条件"><span class="nav-number">2.</span> <span class="nav-text">前提条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作步骤"><span class="nav-number">3.</span> <span class="nav-text">操作步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装Docker"><span class="nav-number">3.1.</span> <span class="nav-text">安装Docker</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载镜像"><span class="nav-number">3.2.</span> <span class="nav-text">下载镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动容器"><span class="nav-number">3.3.</span> <span class="nav-text">启动容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#安装JDK和Tomcat"><span class="nav-number">3.4.</span> <span class="nav-text">安装JDK和Tomcat</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置环境变量"><span class="nav-number">3.5.</span> <span class="nav-text">设置环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在容器中制作tomcat运行脚本"><span class="nav-number">3.6.</span> <span class="nav-text">在容器中制作tomcat运行脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建自定义的Java-Web-镜像"><span class="nav-number">3.7.</span> <span class="nav-text">创建自定义的Java Web 镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用自定义的镜像启动容器"><span class="nav-number">3.8.</span> <span class="nav-text">用自定义的镜像启动容器</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">WuFeee</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
